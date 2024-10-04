@@ -1,21 +1,23 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
+  parseAndValidateMatches,
+  parseTeams,
   points,
   sortTable,
   totalAlternateMatchPoints,
   totalMatchPoints,
+  validateTeams,
 } from './utils';
-import { Table, Team } from './declaration';
+import { Table, Team, TeamDetails } from './declaration';
 
 describe('totalMatchPoints', () => {
-  const team: Team = {
-    name: 'Team',
+  const team: TeamDetails = {
     regDate: new Date(),
     wins: 0,
     draws: 0,
     losses: 0,
     goals: 0,
-    group: 1,
+    group: '1',
   };
   beforeEach(() => {
     team.wins = 0;
@@ -45,14 +47,13 @@ describe('totalMatchPoints', () => {
 });
 
 describe('totalAlternateMatchPoints', () => {
-  const team: Team = {
-    name: 'Team',
+  const team: TeamDetails = {
     regDate: new Date(),
     wins: 0,
     draws: 0,
     losses: 0,
     goals: 0,
-    group: 1,
+    group: '1',
   };
   beforeEach(() => {
     team.wins = 0;
@@ -84,23 +85,21 @@ describe('totalAlternateMatchPoints', () => {
 });
 
 describe('sortTable', () => {
-  const teamA: Team = {
-    name: 'Team',
+  const teamA: TeamDetails = {
     regDate: new Date(),
     wins: 0,
     draws: 0,
     losses: 0,
     goals: 0,
-    group: 1,
+    group: '1',
   };
-  const teamB: Team = {
-    name: 'Team',
+  const teamB: TeamDetails = {
     regDate: new Date(),
     wins: 0,
     draws: 0,
     losses: 0,
     goals: 0,
-    group: 1,
+    group: '1',
   };
   const table: Table = [teamA, teamB];
   beforeEach(() => {
@@ -148,5 +147,163 @@ describe('sortTable', () => {
     teamA.regDate.setMonth(11, 11);
     teamB.regDate.setMonth(1, 1);
     expect(sortTable(table)).toStrictEqual([teamB, teamA]);
+  });
+});
+
+describe('parseTeams', () => {
+  const form: FormData = new FormData();
+  beforeEach(() => {
+    form.delete('teams');
+    form.delete('matches');
+  });
+
+  test('should return an error message on blank input', () => {
+    form.append('teams', '');
+    expect(() => parseTeams(form)).toThrowError('Please fill in the teams.');
+  });
+
+  test('should return an error message if a team group is not 1 or 2', () => {
+    form.append('teams', 'teamA 01/04 2\r\nteamB 01/04 3');
+    expect(() => parseTeams(form)).toThrowError(
+      'Invalid group number, expected 1 or 2.'
+    );
+  });
+  test('should return an error message if a team registration date is wrongly formatted', () => {
+    form.append('teams', 'teamA 01/04 1\r\nteamB 01/024 2');
+    expect(() => parseTeams(form)).toThrowError('Invalid date');
+    form.set('teams', 'teamA 01/04 1\r\nteamB 00/20 2');
+    expect(() => parseTeams(form)).toThrowError('Invalid date');
+    form.set('teams', 'teamA 01/04 1\r\nteamB 0020 2');
+    expect(() => parseTeams(form)).toThrowError('Invalid date');
+  });
+});
+
+const teamA: Team = {
+  name: 'teamA',
+  regDate: '01/01',
+  group: '1',
+  gamesPlayed: 0,
+};
+const teamB: Team = {
+  name: 'teamB',
+  regDate: '01/01',
+  group: '1',
+  gamesPlayed: 0,
+};
+const teamC: Team = {
+  name: 'teamC',
+  regDate: '01/01',
+  group: '1',
+  gamesPlayed: 0,
+};
+const teamD: Team = {
+  name: 'teamD',
+  regDate: '01/01',
+  group: '2',
+  gamesPlayed: 0,
+};
+const teamE: Team = {
+  name: 'teamE',
+  regDate: '01/01',
+  group: '2',
+  gamesPlayed: 0,
+};
+const teamF: Team = {
+  name: 'teamE',
+  regDate: '01/01',
+  group: '2',
+  gamesPlayed: 0,
+};
+describe('parseTeams', () => {
+  let teams: Team[] = [];
+  beforeEach(() => {
+    teams = [];
+  });
+
+  test('should return an error message if there are fewer teams in any group than specified', () => {
+    teams = [teamA, teamB];
+
+    expect(() => validateTeams(teams, 2)).toThrowError(
+      'Group 2 has 0 team(s) instead of 2'
+    );
+    teams = [teamD, teamE];
+    expect(() => validateTeams(teams, 2)).toThrowError(
+      'Group 1 has 0 team(s) instead of 2'
+    );
+  });
+  test('should return an error message if there are more teams in any group than specified', () => {
+    teams = [teamA, teamB, teamC, teamD, teamE];
+    expect(() => validateTeams(teams, 2)).toThrowError(
+      'Group 1 has 3 team(s) instead of 2'
+    );
+    teams = [teamA, teamB, teamD, teamE, teamF];
+    expect(() => validateTeams(teams, 2)).toThrowError(
+      'Group 2 has 3 team(s) instead of 2'
+    );
+  });
+});
+
+describe('parseAndValidateMatches', () => {
+  const form: FormData = new FormData();
+  beforeEach(() => {
+    form.delete('matches');
+    teamA.gamesPlayed = 0;
+    teamB.gamesPlayed = 0;
+    teamC.gamesPlayed = 0;
+    teamD.gamesPlayed = 0;
+    teamE.gamesPlayed = 0;
+    teamF.gamesPlayed = 0;
+  });
+
+  test('should return an error message on blank input', () => {
+    form.append('matches', '');
+    expect(() => parseAndValidateMatches([], form)).toThrowError(
+      'Please fill in the matches played.'
+    );
+  });
+
+  test('should return an error message if a match consist of a non-existing team', () => {
+    form.append('matches', 'teamA teamE 0 0');
+    expect(() => parseAndValidateMatches([teamA], form)).toThrowError(
+      'Invalid team name, team does not exist'
+    );
+
+    form.append('matches', 'teamB teamA 0 0');
+    expect(() => parseAndValidateMatches([teamA], form)).toThrowError(
+      'Invalid team name, team does not exist'
+    );
+  });
+
+  test('should return an error message on malformatted goals', () => {
+    form.append('matches', 'teamA teamB hello world');
+    expect(() => parseAndValidateMatches([teamA, teamB], form)).toThrowError(
+      'Invalid input for goals scored.'
+    );
+  });
+
+  test('should return an error message if a match is between teams of different groups', () => {
+    form.append('matches', 'teamA teamD 0 0');
+
+    expect(() => parseAndValidateMatches([teamA, teamD], form)).toThrowError(
+      'Teams can only play other teams in the same group.'
+    );
+  });
+
+  test('should return an error message if more than one match between two teams', () => {
+    form.append(
+      'matches',
+      'teamA teamB 0 0\r\nteamD teamE 0 0\r\nteamB teamA 0 0'
+    );
+
+    expect(() =>
+      parseAndValidateMatches([teamA, teamB, teamD, teamE], form)
+    ).toThrowError('Each team can only play another team once.');
+  });
+
+  test('should return an error message if there are wrong number of matches', () => {
+    form.append('matches', 'teamA teamB 0 0');
+    expect(() =>
+      parseAndValidateMatches([teamA, teamB, teamD, teamE], form, 2)
+    ).toThrowError('teamD only played 0 out of 1 game(s).');
   });
 });
