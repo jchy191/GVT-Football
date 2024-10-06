@@ -1,12 +1,20 @@
 import { z } from 'zod';
 
 export type TeamDetails = {
-  regDate: Date;
+  name: string;
+  regdate: Date;
   wins: number;
   draws: number;
   losses: number;
   goals: number;
-  group: '1' | '2';
+  groupno: '1' | '2';
+};
+
+export type Match = {
+  teama: string;
+  teamb: string;
+  goalsa: number;
+  goalsb: number;
 };
 
 export type Table = TeamDetails[];
@@ -24,9 +32,9 @@ export type MatchPointsAssignment = {
 
 export const TeamSchema = z.object({
   name: z.string().max(255, 'Team name exceeds the character limit of 255.'),
-  regDate: z.string().date(),
-  group: z.enum(['1', '2'], {
-    message: 'Invalid group number, expected 1 or 2.',
+  regdate: z.coerce.date(),
+  groupno: z.enum(['1', '2'], {
+    message: 'Invalid groupno number, expected 1 or 2.',
   }),
   gamesPlayed: z.number().optional(),
 });

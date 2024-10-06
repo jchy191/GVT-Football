@@ -12,12 +12,13 @@ import { Table, Team, TeamDetails } from './declaration';
 
 describe('totalMatchPoints', () => {
   const team: TeamDetails = {
-    regDate: new Date(),
+    regdate: new Date(),
     wins: 0,
     draws: 0,
     losses: 0,
     goals: 0,
-    group: '1',
+    groupno: '1',
+    name: '',
   };
   beforeEach(() => {
     team.wins = 0;
@@ -48,12 +49,13 @@ describe('totalMatchPoints', () => {
 
 describe('totalAlternateMatchPoints', () => {
   const team: TeamDetails = {
-    regDate: new Date(),
+    regdate: new Date(),
     wins: 0,
     draws: 0,
     losses: 0,
     goals: 0,
-    group: '1',
+    groupno: '1',
+    name: '',
   };
   beforeEach(() => {
     team.wins = 0;
@@ -86,20 +88,22 @@ describe('totalAlternateMatchPoints', () => {
 
 describe('sortTable', () => {
   const teamA: TeamDetails = {
-    regDate: new Date(),
+    regdate: new Date(),
     wins: 0,
     draws: 0,
     losses: 0,
     goals: 0,
-    group: '1',
+    groupno: '1',
+    name: '',
   };
   const teamB: TeamDetails = {
-    regDate: new Date(),
+    regdate: new Date(),
     wins: 0,
     draws: 0,
     losses: 0,
     goals: 0,
-    group: '1',
+    groupno: '1',
+    name: '',
   };
   const table: Table = [teamA, teamB];
   beforeEach(() => {
@@ -107,22 +111,22 @@ describe('sortTable', () => {
     teamA.draws = 0;
     teamA.losses = 0;
     teamA.goals = 0;
-    teamA.regDate = new Date();
-    teamA.regDate.setMonth(1, 1);
+    teamA.regdate = new Date();
+    teamA.regdate.setMonth(1, 1);
     teamB.wins = 0;
     teamB.draws = 0;
     teamB.losses = 0;
     teamB.goals = 0;
-    teamB.regDate = new Date();
-    teamB.regDate.setMonth(1, 1);
+    teamB.regdate = new Date();
+    teamB.regdate.setMonth(1, 1);
   });
   test('should sort by total points first', () => {
     teamA.wins = 4;
     teamB.wins = 9;
     teamA.goals = 10;
     teamB.goals = 2;
-    teamA.regDate.setMonth(1, 1);
-    teamB.regDate.setMonth(11, 11);
+    teamA.regdate.setMonth(1, 1);
+    teamB.regdate.setMonth(11, 11);
     expect(sortTable(table)).toStrictEqual([teamB, teamA]);
   });
   test('should sort by total goals second', () => {
@@ -130,8 +134,8 @@ describe('sortTable', () => {
     teamB.draws = 3;
     teamA.goals = 9;
     teamB.goals = 11;
-    teamA.regDate.setMonth(1, 1);
-    teamB.regDate.setMonth(11, 11);
+    teamA.regdate.setMonth(1, 1);
+    teamB.regdate.setMonth(11, 11);
     expect(sortTable(table)).toStrictEqual([teamB, teamA]);
   });
   test('should sort by alternative match points third', () => {
@@ -139,13 +143,13 @@ describe('sortTable', () => {
     teamB.draws = 3;
     teamA.goals = 10;
     teamB.goals = 10;
-    teamA.regDate.setMonth(1, 1);
-    teamB.regDate.setMonth(11, 11);
+    teamA.regdate.setMonth(1, 1);
+    teamB.regdate.setMonth(11, 11);
     expect(sortTable(table)).toStrictEqual([teamB, teamA]);
   });
   test('should sort by earliest registration date finally', () => {
-    teamA.regDate.setMonth(11, 11);
-    teamB.regDate.setMonth(1, 1);
+    teamA.regdate.setMonth(11, 11);
+    teamB.regdate.setMonth(1, 1);
     expect(sortTable(table)).toStrictEqual([teamB, teamA]);
   });
 });
@@ -180,38 +184,38 @@ describe('parseTeams', () => {
 
 const teamA: Team = {
   name: 'teamA',
-  regDate: '01/01',
-  group: '1',
+  regdate: new Date('01/01'),
+  groupno: '1',
   gamesPlayed: 0,
 };
 const teamB: Team = {
   name: 'teamB',
-  regDate: '01/01',
-  group: '1',
+  regdate: new Date('01/01'),
+  groupno: '1',
   gamesPlayed: 0,
 };
 const teamC: Team = {
   name: 'teamC',
-  regDate: '01/01',
-  group: '1',
+  regdate: new Date('01/01'),
+  groupno: '1',
   gamesPlayed: 0,
 };
 const teamD: Team = {
   name: 'teamD',
-  regDate: '01/01',
-  group: '2',
+  regdate: new Date('01/01'),
+  groupno: '2',
   gamesPlayed: 0,
 };
 const teamE: Team = {
   name: 'teamE',
-  regDate: '01/01',
-  group: '2',
+  regdate: new Date('01/01'),
+  groupno: '2',
   gamesPlayed: 0,
 };
 const teamF: Team = {
   name: 'teamE',
-  regDate: '01/01',
-  group: '2',
+  regdate: new Date('01/01'),
+  groupno: '2',
   gamesPlayed: 0,
 };
 describe('parseTeams', () => {

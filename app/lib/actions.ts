@@ -1,6 +1,7 @@
 'use server';
 import { db } from '@vercel/postgres';
 import { parseTeams, validateTeams, parseAndValidateMatches } from './utils';
+import { revalidatePath } from 'next/cache';
 
 export async function createTable(
   groupSize: number = 6,
@@ -17,7 +18,7 @@ export async function createTable(
     const error = err as { message: string };
     return error.message;
   }
-
+  console.log(teams[0].regdate.toISOString());
   const client = await db.connect();
   try {
     await client.sql`BEGIN`;
@@ -26,7 +27,7 @@ export async function createTable(
       teams.map(
         (team) => client.sql`
     INSERT INTO teams (name, groupno, regdate) VALUES
-    (${team.name}, ${team.group}, ${team.regDate})
+    (${team.name}, ${team.groupno}, ${team.regdate.toISOString()})
     `
       )
     );
@@ -45,5 +46,6 @@ export async function createTable(
     return 'Issues connecting to the database.';
   }
 
+  revalidatePath('/');
   return 'Success!';
 }

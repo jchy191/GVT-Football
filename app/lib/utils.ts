@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {
+  Match,
   MatchPointsAssignment,
   MatchSchema,
   Table,
@@ -48,7 +49,7 @@ export function sortTable(table: Table) {
     const altPointsDiff =
       totalAlternateMatchPoints(b) - totalAlternateMatchPoints(a);
     if (altPointsDiff != 0) return altPointsDiff;
-    return a.regDate.valueOf() - b.regDate.valueOf();
+    return new Date(a.regdate).valueOf() - new Date(b.regdate).valueOf();
   });
   return table;
 }
@@ -62,8 +63,8 @@ export function parseTeams(formData: FormData): Team[] {
   (formData.get('teams') as string).split('\r\n').forEach((team) => {
     const validatedFields = TeamSchema.safeParse({
       name: team.split(' ')[0],
-      regDate: `2024-${team.split(' ')[1].split('/')[1]}-${team.split(' ')[1].split('/')[0]}`,
-      group: team.split(' ')[2],
+      regdate: `2024-${team.split(' ')[1].split('/')[1]}-${team.split(' ')[1].split('/')[0]}T00:00:00.000Z`,
+      groupno: team.split(' ')[2],
     });
 
     if (!validatedFields.success) {
@@ -72,11 +73,11 @@ export function parseTeams(formData: FormData): Team[] {
       );
     }
 
-    const { name, regDate, group } = validatedFields.data;
+    const { name, regdate, groupno } = validatedFields.data;
 
     teams.set(name, {
-      regDate: regDate,
-      group: group,
+      regdate: regdate,
+      groupno: groupno,
       name: name,
       gamesPlayed: 0,
     });
@@ -89,7 +90,7 @@ export function validateTeams(teams: Team[], groupSize: number) {
   let group2Counter: number = 0;
 
   teams.forEach((team) => {
-    if (team.group === '1') group1Counter++;
+    if (team.groupno === '1') group1Counter++;
     else group2Counter++;
   });
 
@@ -135,7 +136,7 @@ export function parseAndValidateMatches(
     const teamADetails = teamsData.find((team) => team.name === teamA) as Team;
     const teamBDetails = teamsData.find((team) => team.name === teamB) as Team;
 
-    if (teamADetails.group !== teamBDetails.group) {
+    if (teamADetails.groupno !== teamBDetails.groupno) {
       throw new Error('Teams can only play other teams in the same group.');
     }
     const mapKey = [teamA, teamB].sort().join();
@@ -162,4 +163,37 @@ export function parseAndValidateMatches(
     }
   });
   return Array.from(matches.values());
+}
+
+export function generateTableFromData(
+  teams: Team[],
+  matches: Match[]
+): { group1: Table; group2: Table } {
+  const table: Table = teams.map((team) => ({
+    wins: 0,
+    draws: 0,
+    losses: 0,
+    goals: 0,
+    ...team,
+  }));
+  const teamMap = Object.fromEntries(table.map((table) => [table.name, table]));
+
+  matches.forEach((match) => {
+    teamMap[match.teama].goals += match.goalsa;
+    teamMap[match.teamb].goals += match.goalsb;
+    if (match.goalsa > match.goalsb) {
+      teamMap[match.teama].wins++;
+      teamMap[match.teamb].losses++;
+    } else if (match.goalsa == match.goalsb) {
+      teamMap[match.teama].draws++;
+      teamMap[match.teamb].draws++;
+    } else {
+      teamMap[match.teama].losses++;
+      teamMap[match.teamb].wins++;
+    }
+  });
+  const group1 = table.filter((entry) => entry.groupno == '1');
+  const group2 = table.filter((entry) => entry.groupno === '2');
+
+  return { group1: sortTable(group1), group2: sortTable(group2) };
 }
