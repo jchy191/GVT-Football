@@ -2,6 +2,7 @@
 import { db } from '@vercel/postgres';
 import { parseTeams, validateTeams, parseAndValidateMatches } from './utils';
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 export async function createTable(
   groupSize: number = 6,
@@ -18,7 +19,6 @@ export async function createTable(
     const error = err as { message: string };
     return error.message;
   }
-  console.log(teams[0].regdate.toISOString());
   const client = await db.connect();
   try {
     await client.sql`BEGIN`;
@@ -40,6 +40,10 @@ export async function createTable(
     `
       )
     );
+    await client.sql`TRUNCATE form`;
+    await client.sql`INSERT INTO form (teams, matches) VALUES
+    (${formData.get('teams')?.toString()}, ${formData.get('matches')?.toString()} )
+    `;
     await client.sql`COMMIT`;
   } catch {
     await client.sql`ROLLBACK`;
@@ -47,5 +51,24 @@ export async function createTable(
   }
 
   revalidatePath('/');
-  return 'Success!';
+  revalidatePath('/edit');
+  redirect('/');
+}
+
+export async function deleteTable() {
+  const client = await db.connect();
+  try {
+    await client.sql`BEGIN`;
+    await client.sql`TRUNCATE teams`;
+    await client.sql`TRUNCATE matches`;
+    await client.sql`TRUNCATE form`;
+    await client.sql`COMMIT`;
+  } catch {
+    await client.sql`ROLLBACK`;
+    return 'Issues connecting to the database.';
+  }
+
+  revalidatePath('/');
+  revalidatePath('/edit');
+  return 'Successfully cleared data.';
 }

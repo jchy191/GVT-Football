@@ -12,10 +12,10 @@ export default function Table({ entries }: { entries: TeamDetails[] }) {
             <td className="px-4">Wins</td>
             <td className="px-4">Draws</td>
             <td className="px-4">Losses</td>
-            <td className="px-4">Goals</td>
-            <td className="px-4">Reg. Date</td>
             <td className="px-4">Points</td>
+            <td className="px-4">Goals</td>
             <td className="px-4">Alt. Points</td>
+            <td className="px-4">Reg. Date</td>
           </tr>
         </thead>
         <tbody>
@@ -26,15 +26,15 @@ export default function Table({ entries }: { entries: TeamDetails[] }) {
               <td className="px-4 py-2 text-gray-600">{entry.wins}</td>
               <td className="px-4 py-2 text-gray-600">{entry.draws}</td>
               <td className="px-4 py-2 text-gray-600">{entry.losses}</td>
-              <td className="px-4 py-2 text-gray-600">{entry.goals}</td>
-              <td className="px-4 py-2 text-gray-600">
-                {entry.regdate.getDate()}/{entry.regdate.getMonth() + 1}
-              </td>
               <td className="px-4 py-2 text-gray-600">
                 {totalMatchPoints(entry)}
               </td>
+              <td className="px-4 py-2 text-gray-600">{entry.goals}</td>
               <td className="px-4 py-2 text-gray-600">
                 {totalAlternateMatchPoints(entry)}
+              </td>
+              <td className="px-4 py-2 text-gray-600">
+                {entry.regdate.getDate()}/{entry.regdate.getMonth() + 1}
               </td>
             </tr>
           ))}

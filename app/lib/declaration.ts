@@ -52,3 +52,8 @@ export const MatchSchema = (teams: [string, ...string[]]) =>
     goalsA: z.coerce.number({ message: 'Invalid input for goals scored.' }),
     goalsB: z.coerce.number({ message: 'Invalid input for goals scored.' }),
   });
+
+export type UserFormInput = {
+  teams: string;
+  matches: string;
+};

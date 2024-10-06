@@ -1,5 +1,5 @@
 import { sql } from '@vercel/postgres';
-import { Match, Team } from './declaration';
+import { UserFormInput, Match, Team } from './declaration';
 
 export async function fetchTable() {
   try {
@@ -20,5 +20,15 @@ export async function fetchTeamMatches(name: string) {
     return team.rows;
   } catch {
     throw new Error(`Failed to fetch matches for team ${name}`);
+  }
+}
+
+export async function fetchFormInputs() {
+  try {
+    const form = await sql<UserFormInput>`select * from form;`;
+
+    return form.rows[0];
+  } catch {
+    throw new Error(`Failed to fetch form input`);
   }
 }
