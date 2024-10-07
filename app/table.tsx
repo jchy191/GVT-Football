@@ -1,5 +1,9 @@
 import { TeamDetails } from './lib/declaration';
-import { totalMatchPoints, totalAlternateMatchPoints } from './lib/utils';
+import {
+  totalMatchPoints,
+  totalAlternateMatchPoints,
+  extractStringFromDate,
+} from './lib/utils';
 
 export default function Table({ entries }: { entries: TeamDetails[] }) {
   return (
@@ -34,7 +38,7 @@ export default function Table({ entries }: { entries: TeamDetails[] }) {
                 {totalAlternateMatchPoints(entry)}
               </td>
               <td className="px-4 py-2 text-gray-600">
-                {entry.regdate.getDate()}/{entry.regdate.getMonth() + 1}
+                {extractStringFromDate(entry.regdate)}
               </td>
             </tr>
           ))}

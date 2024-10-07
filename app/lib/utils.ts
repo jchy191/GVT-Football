@@ -38,6 +38,10 @@ export function totalAlternateMatchPoints(team: TeamDetails) {
   );
 }
 
+export function extractStringFromDate(date: Date) {
+  return `${date.getDate()}/${date.getMonth() + 1}`;
+}
+
 export function sortTable(table: Table) {
   table.sort((a: TeamDetails, b: TeamDetails) => {
     const pointsDiff = totalMatchPoints(b) - totalMatchPoints(a);
@@ -168,7 +172,7 @@ export function parseAndValidateMatches(
 export function generateTableFromData(
   teams: Team[],
   matches: Match[]
-): { group1: Table; group2: Table } {
+): { '1': Table; '2': Table } {
   const table: Table = teams.map((team) => ({
     wins: 0,
     draws: 0,
@@ -195,5 +199,5 @@ export function generateTableFromData(
   const group1 = table.filter((entry) => entry.groupno == '1');
   const group2 = table.filter((entry) => entry.groupno === '2');
 
-  return { group1: sortTable(group1), group2: sortTable(group2) };
+  return { '1': sortTable(group1), '2': sortTable(group2) };
 }

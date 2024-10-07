@@ -52,6 +52,7 @@ export async function createTable(
 
   revalidatePath('/');
   revalidatePath('/edit');
+  revalidatePath('/teams');
   redirect('/');
 }
 
@@ -70,5 +71,6 @@ export async function deleteTable() {
 
   revalidatePath('/');
   revalidatePath('/edit');
+  revalidatePath('/teams');
   return 'Successfully cleared data.';
 }
