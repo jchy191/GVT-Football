@@ -34,7 +34,7 @@ export const TeamSchema = z.object({
   name: z.string().max(255, 'Team name exceeds the character limit of 255.'),
   regdate: z.coerce.date(),
   groupno: z.enum(['1', '2'], {
-    message: 'Invalid groupno number, expected 1 or 2.',
+    message: 'Invalid group number, expected 1 or 2.',
   }),
   gamesPlayed: z.number().optional(),
 });
