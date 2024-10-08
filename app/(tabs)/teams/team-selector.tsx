@@ -39,7 +39,7 @@ export default function TeamSelector({
               <Link key={team} href={`/teams?name=${team}`}>
                 <ListboxOption
                   value={team}
-                  className="group relative select-none py-2 pl-3 pr-9 text-gray-900 data-[focus]:bg-blue-600 data-[focus]:text-white"
+                  className="group relative select-none py-2 pl-3 pr-9 text-gray-900 data-[focus]:bg-primary data-[focus]:text-white"
                 >
                   <span className="block truncate font-normal group-data-[selected]:font-semibold">
                     {team}

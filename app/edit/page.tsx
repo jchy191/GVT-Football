@@ -1,5 +1,5 @@
 import React from 'react';
-import Form from '../form';
+import Form from '../ui/form';
 import { fetchFormInputs } from '../lib/data';
 import Container from '../ui/container';
 import { auth } from '@/auth';

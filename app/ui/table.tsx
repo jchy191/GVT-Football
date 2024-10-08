@@ -1,10 +1,10 @@
 import { ArrowUpIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { TeamDetails } from './lib/declaration';
+import { TeamDetails } from '../lib/declaration';
 import {
   totalMatchPoints,
   totalAlternateMatchPoints,
   extractStringFromDate,
-} from './lib/utils';
+} from '../lib/utils';
 
 export default function Table({ entries }: { entries: TeamDetails[] }) {
   return (
@@ -25,13 +25,13 @@ export default function Table({ entries }: { entries: TeamDetails[] }) {
         </thead>
         <tbody>
           {entries.map((entry, i) => (
-            <tr key={entry.name} className="odd:bg-indigo-50">
+            <tr key={entry.name} className="odd:bg-primary-light">
               <td className="px-4 flex items-center">
                 <p>{i + 1}</p>
                 {i <= 3 ? (
                   <ArrowUpIcon width={32} className="text-green-700" />
                 ) : (
-                  <XMarkIcon width={32} className="text-red-700" />
+                  <XMarkIcon width={32} className="text-error" />
                 )}
               </td>
               <td className="font-bold px-4">{entry.name}</td>

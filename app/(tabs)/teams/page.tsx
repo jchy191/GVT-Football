@@ -21,7 +21,7 @@ export default async function Page({
       <>
         {session?.user && (
           <Link href={'/edit'}>
-            <button className="rounded-md bg-blue-600 text-white hover:text-blue-600 hover:bg-white hover:border-blue-600 border px-2 py-1">
+            <button className="rounded-md bg-primary text-white hover:text-primary hover:bg-white hover:border-primary border px-2 py-1">
               {'Add'}
             </button>
           </Link>

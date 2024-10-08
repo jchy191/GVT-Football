@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
   parseAndValidateMatches,
+  parseNewUserForm,
   parseTeams,
   points,
   sortTable,
@@ -309,5 +310,32 @@ describe('parseAndValidateMatches', () => {
     expect(() =>
       parseAndValidateMatches([teamA, teamB, teamD, teamE], form, 2)
     ).toThrowError('teamD only played 0 out of 1 game(s).');
+  });
+});
+
+describe('parseNewUserForm', () => {
+  const form: FormData = new FormData();
+  beforeEach(() => {
+    form.delete('email');
+    form.delete('role');
+  });
+
+  test('should return an error message on blank input', () => {
+    form.append('email', '');
+    form.append('role', 'user');
+    expect(() => parseNewUserForm(form)).toThrowError(
+      "Please fill in user's email."
+    );
+  });
+
+  test('should return an error message if the email is not valid', () => {
+    form.append('email', 'blahblah');
+    form.append('role', 'user');
+    expect(() => parseNewUserForm(form)).toThrowError('Invalid email.');
+  });
+  test('should return an error message if the role is not valid', () => {
+    form.append('email', 'blah@gmail.com');
+    form.append('role', 'blah');
+    expect(() => parseNewUserForm(form)).toThrowError('Invalid role.');
   });
 });

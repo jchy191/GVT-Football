@@ -3,6 +3,8 @@ import {
   Match,
   MatchPointsAssignment,
   MatchSchema,
+  NewUser,
+  NewUserSchema,
   Table,
   Team,
   TeamDetails,
@@ -56,6 +58,22 @@ export function sortTable(table: Table) {
     return new Date(a.regdate).valueOf() - new Date(b.regdate).valueOf();
   });
   return table;
+}
+
+export function parseNewUserForm(formData: FormData): NewUser {
+  if (!formData.get('email')) {
+    throw new Error("Please fill in user's email.");
+  }
+  const validatedFields = NewUserSchema.safeParse({
+    email: formData.get('email'),
+    role: formData.get('role'),
+  });
+  if (!validatedFields.success) {
+    throw new Error(
+      Object.values(validatedFields.error.flatten().fieldErrors).join(' ')
+    );
+  }
+  return validatedFields.data;
 }
 
 export function parseTeams(formData: FormData): Team[] {

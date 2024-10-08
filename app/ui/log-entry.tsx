@@ -10,12 +10,12 @@ export default function LogEntry({ log }: { log: Log & { user: User } }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="text-sm border-b border-t py-1">
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <div className="flex-initial basis-1/6">
           <p>{log.createdAt.toUTCString().split(' ').slice(0, 4).join(' ')}</p>
           <p>{log.createdAt.toUTCString().split(' ').slice(4).join(' ')}</p>
         </div>
-        <div className="mx-2 flex-initial">
+        <div className="mx-2 flex-initial basis-1/12">
           <Image
             src={log.user.image ?? ''}
             alt={log.user.name ?? ''}
@@ -24,11 +24,11 @@ export default function LogEntry({ log }: { log: Log & { user: User } }) {
             height={32}
           />
         </div>
-        <div className="flex-initial basis-1/6">
+        <div className="flex-initial basis-1/3">
           <p>{log.user.name}</p>
           <p>{log.user.email}</p>
         </div>
-        <p className="flex-initial">{log.action}</p>
+        <p className="flex-initial basis-1/12">{log.action}</p>
         <div className="flex-initial basis-1/12">
           {log.action !== 'DELETE' &&
             (open ? (

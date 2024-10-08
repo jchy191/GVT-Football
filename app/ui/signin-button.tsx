@@ -10,7 +10,7 @@ export default function SignIn() {
     >
       <button
         type="submit"
-        className="ring-indigo-700 font-medium text-white bg-indigo-700 rounded-md ring-1 px-2 py-1 hover:bg-white hover:text-indigo-700"
+        className="ring-primary font-medium text-white bg-primary rounded-md ring-1 px-2 py-1 hover:bg-white hover:text-primary"
       >
         Sign In With Google
       </button>

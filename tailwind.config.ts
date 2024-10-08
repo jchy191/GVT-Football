@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+const colors = require('tailwindcss/colors');
 
 const config: Config = {
   content: [
@@ -11,6 +12,13 @@ const config: Config = {
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
+        primary: {
+          light: colors.blue[50],
+          DEFAULT: colors.blue[800],
+        },
+        error: {
+          DEFAULT: colors.red[700],
+        },
       },
     },
   },

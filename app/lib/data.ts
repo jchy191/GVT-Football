@@ -72,3 +72,16 @@ export async function fetchLogs() {
     throw new Error('Failed to fetch logs');
   }
 }
+
+export async function fetchUsers() {
+  try {
+    const users = await prisma.user.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    return users;
+  } catch {
+    throw new Error('Failed to fetch users');
+  }
+}

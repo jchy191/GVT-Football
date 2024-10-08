@@ -10,7 +10,7 @@ export default function SignOut() {
     >
       <button
         type="submit"
-        className="ring-red-700 text-white font-medium bg-red-700 rounded-md ring-1 px-2 py-1 hover:bg-white hover:text-red-700"
+        className="ring-error text-white font-medium bg-error rounded-md ring-1 px-2 py-1 hover:bg-white hover:text-error"
       >
         Sign Out
       </button>

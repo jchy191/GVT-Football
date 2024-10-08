@@ -7,5 +7,5 @@ export default function LoginError() {
   const error = searchParams.get('error');
   if (!error) return <></>;
 
-  return <p className="text-red-700">There was an error trying to log in.</p>;
+  return <p className="text-error">There was an error trying to log in.</p>;
 }

@@ -12,8 +12,10 @@ export default async function Layout({
     { name: 'Individual Teams', href: '/teams', current: false },
   ];
   const session = await auth();
-  if (session?.user) {
+
+  if (session?.user.role === 'admin') {
     tabs.push({ name: 'Logs', href: '/logs', current: false });
+    tabs.push({ name: 'Users', href: '/users', current: false });
   }
   return (
     <Container>

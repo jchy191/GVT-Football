@@ -101,7 +101,7 @@ model Log {
   id          String   @id @default(cuid())
   createdAt   DateTime @default(now())
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   action      LogType
   formTeams   String?
   formMatches String?

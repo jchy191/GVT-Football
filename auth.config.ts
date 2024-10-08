@@ -1,27 +1,43 @@
 import { NextAuthConfig } from 'next-auth';
 import Google from 'next-auth/providers/google';
+import { prisma } from './prisma';
 
-// Notice this is only an object, not a full Auth.js instance
 export default {
   providers: [
     Google({
+      allowDangerousEmailAccountLinking: true,
       profile(profile) {
         return {
           id: profile.sub,
-          name: `${profile.given_name} ${profile.family_name}`,
+          name: `${profile.given_name} ${profile.family_name ? profile.family_name : ''}`,
           email: profile.email,
           image: profile.picture,
-          role: 'admin',
-          //   role: profile.role,
+          role: profile.role,
         };
       },
     }),
   ],
   session: { strategy: 'jwt' },
   callbacks: {
-    async signIn({ user, account, profile }) {
-      if (!Object.hasOwn(user, 'emailVerified')) {
+    async signIn({ user }) {
+      const userObj = await prisma.user.findUnique({
+        where: {
+          email: user.email as string,
+        },
+      });
+      if (!userObj) {
         return false;
+      }
+      if (!userObj.name) {
+        await prisma.user.update({
+          data: {
+            name: user.name,
+            image: user.image,
+          },
+          where: {
+            email: user.email as string,
+          },
+        });
       }
       return true;
     },
@@ -29,9 +45,9 @@ export default {
       return { ...token, ...user };
     },
     session({ session, token }) {
-      session.user.role = token.role;
-      session.user.image = token.image;
-      session.user.id = token.id;
+      session.user.role = token.role as 'user' | 'admin';
+      session.user.image = token.image as string;
+      session.user.id = token.id as string;
       return session;
     },
   },

@@ -1,8 +1,8 @@
 'use client';
 
-import { createTable } from './lib/actions';
+import { createTable } from '../lib/actions';
 import { useFormState } from 'react-dom';
-import { UserFormInput } from './lib/declaration';
+import { UserFormInput } from '../lib/declaration';
 import Link from 'next/link';
 import type { LogType } from '@prisma/client';
 
@@ -39,13 +39,13 @@ export default function Form({ data }: { data: UserFormInput }) {
         defaultValue={data ? data.matches : ''}
       />
       <Link href={'/'}>
-        <button className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
+        <button className="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary">
           Back
         </button>
       </Link>
       <button
         type="submit"
-        className="rounded-md ml-3 bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+        className="rounded-md ml-3 bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary"
       >
         Save
       </button>

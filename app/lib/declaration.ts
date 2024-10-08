@@ -30,8 +30,17 @@ export type MatchPointsAssignment = {
   alternate: PointsAssignment;
 };
 
+export const NewUserSchema = z.object({
+  email: z.string().email({ message: 'Invalid email.' }),
+  role: z.enum(['admin', 'user'], {
+    message: 'Invalid role.',
+  }),
+});
+
+export type NewUser = z.infer<typeof NewUserSchema>;
+
 export const TeamSchema = z.object({
-  name: z.string().max(255, 'Team name exceeds the character limit of 255.'),
+  name: z.string(),
   regdate: z.coerce.date(),
   groupno: z
     .number()
