@@ -33,7 +33,11 @@ export default async function Page({
   const name = searchParams?.name;
 
   if (!name) {
-    return <TeamSelector teams={teams} currentTeam={name} />;
+    return (
+      <div className="mt-6">
+        <TeamSelector teams={teams} currentTeam={name} />
+      </div>
+    );
   }
 
   const table = await fetchTable();
@@ -52,46 +56,49 @@ export default async function Page({
     .sort((a, b) => a.order - b.order);
 
   return (
-    <>
-      {' '}
+    <div className="mt-6">
       <TeamSelector teams={teams} currentTeam={name} />
       {teamData && (
         <>
-          <h3 className="font-bold text-xl">Team Details</h3>
+          <h3 className="font-semibold text-xl mt-4">Team Details</h3>
           <div className="grid grid-cols-2 max-w-96">
-            <h3>Team Name:</h3>
+            <p className="font-semibold">Team Name:</p>
             <p>{team.name}</p>
-            <h3>Ranking:</h3>
+            <p className="font-semibold">Ranking:</p>
             <p>{teamDataIndex + 1}</p>
-            <h3>Registration Date:</h3>
+            <p className="font-semibold">Registration Date:</p>
             <p>{extractStringFromDate(team.regdate)}</p>
-            <h3>Group:</h3>
+            <p className="font-semibold">Group:</p>
             <p>{team.groupno}</p>
-            <h3>Points:</h3>
+            <p className="font-semibold">Points:</p>
             <p>{totalMatchPoints(teamData)}</p>
-            <h3>Goals:</h3>
+            <p className="font-semibold">Goals:</p>
             <p>{teamData.goals}</p>
-            <h3>Alt Points:</h3>
+            <p className="font-semibold">Alt Points:</p>
             <p>{totalAlternateMatchPoints(teamData)}</p>
           </div>
 
-          <h3 className="font-bold text-xl">Matches</h3>
+          <h3 className="font-bold text-xl mt-4">Matches</h3>
           {matches.length > 0 &&
             matches.map((match) => (
               <div
                 key={`${match.namea}${match.nameb}`}
                 className="flex justify-between max-w-96"
               >
-                <p className="font-bold">{match.namea}</p>
-                <p className="text-xl tracking-widest">
+                <p className="font-semibold flex-initial basis-1/6">
+                  {match.namea}
+                </p>
+                <p className="text-xl tracking-widest flex-initial basis-2/3 text-center">
                   {match.goalsa}-{match.goalsb}
                 </p>
 
-                <p className="font-bold">{match.nameb}</p>
+                <p className="font-semibold flex-initial basis-1/6">
+                  {match.nameb}
+                </p>
               </div>
             ))}
         </>
       )}
-    </>
+    </div>
   );
 }

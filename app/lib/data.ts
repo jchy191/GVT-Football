@@ -13,9 +13,6 @@ export async function fetchTable() {
 
 export async function fetchTeamData(name: string) {
   try {
-    // const matches = await sql<
-    //   Team & Match
-    // >`select * from "Team" join "Match" on ("Team".name = "Match".namea OR "Team".name = "Match".nameb) where "Team".name = ${name};`;
     const team = await prisma.team.findUnique({
       where: {
         name: name,
@@ -51,5 +48,27 @@ export async function fetchFormInputs() {
     return form[0];
   } catch {
     throw new Error(`Failed to fetch form input`);
+  }
+}
+
+export async function fetchLogs() {
+  try {
+    const logs = await prisma.log.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      select: {
+        userId: true,
+        id: true,
+        createdAt: true,
+        formMatches: true,
+        formTeams: true,
+        action: true,
+        user: true,
+      },
+    });
+    return logs;
+  } catch {
+    throw new Error('Failed to fetch logs');
   }
 }

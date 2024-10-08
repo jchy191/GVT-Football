@@ -5,9 +5,11 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/prisma';
 import { auth } from '@/auth';
+import type { LogType } from '@prisma/client';
 
 export async function createTable(
   groupSize: number = 6,
+  action: LogType,
   prevState: string,
   formData: FormData
 ) {
@@ -53,6 +55,14 @@ export async function createTable(
           matches: formData.get('matches')?.toString() as string,
         },
       }),
+      prisma.log.create({
+        data: {
+          userId: session.user.id,
+          action: action,
+          formTeams: formData.get('teams')?.toString(),
+          formMatches: formData.get('matches')?.toString(),
+        },
+      }),
     ]);
   } catch {
     return 'Issues connecting to the database.';
@@ -74,6 +84,12 @@ export async function deleteTable() {
       prisma.match.deleteMany({}),
       prisma.team.deleteMany({}),
       prisma.form.deleteMany({}),
+      prisma.log.create({
+        data: {
+          userId: session.user.id,
+          action: 'DELETE',
+        },
+      }),
     ]);
   } catch {
     return 'Issues connecting to the database.';

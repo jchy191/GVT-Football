@@ -4,12 +4,17 @@ import { createTable } from './lib/actions';
 import { useFormState } from 'react-dom';
 import { UserFormInput } from './lib/declaration';
 import Link from 'next/link';
+import type { LogType } from '@prisma/client';
 
 export const maxDuration = 40;
 
 export default function Form({ data }: { data: UserFormInput }) {
   const initialState = '';
-  const createTableWithParams = createTable.bind(null, 6);
+  let action: LogType = 'UPDATE';
+  if (!data) {
+    action = 'CREATE';
+  }
+  const createTableWithParams = createTable.bind(null, 6, action);
   const [state, formAction] = useFormState(createTableWithParams, initialState);
 
   return (

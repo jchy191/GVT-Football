@@ -1,3 +1,4 @@
+import { ArrowUpIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { TeamDetails } from './lib/declaration';
 import {
   totalMatchPoints,
@@ -25,7 +26,14 @@ export default function Table({ entries }: { entries: TeamDetails[] }) {
         <tbody>
           {entries.map((entry, i) => (
             <tr key={entry.name} className="odd:bg-indigo-50">
-              <td className="px-4">{i + 1}</td>
+              <td className="px-4 flex items-center">
+                <p>{i + 1}</p>
+                {i <= 3 ? (
+                  <ArrowUpIcon width={32} className="text-green-700" />
+                ) : (
+                  <XMarkIcon width={32} className="text-red-700" />
+                )}
+              </td>
               <td className="font-bold px-4">{entry.name}</td>
               <td className="px-4 py-2 text-gray-600">{entry.wins}</td>
               <td className="px-4 py-2 text-gray-600">{entry.draws}</td>
