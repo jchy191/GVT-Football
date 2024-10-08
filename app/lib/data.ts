@@ -1,13 +1,11 @@
-import { sql } from '@vercel/postgres';
-import { UserFormInput, Match, Team } from './declaration';
 import { generateTableFromData } from './utils';
+import { prisma } from '@/prisma';
 
 export async function fetchTable() {
   try {
-    const teams = await sql<Team>`SELECT * from teams`;
-    const matches = await sql<Match>`SELECT * from matches`;
-
-    return generateTableFromData(teams.rows, matches.rows);
+    const teams = await prisma.team.findMany();
+    const matches = await prisma.match.findMany();
+    return generateTableFromData(teams, matches);
   } catch {
     throw new Error('Failed to fetch table data.');
   }
@@ -15,21 +13,32 @@ export async function fetchTable() {
 
 export async function fetchTeamData(name: string) {
   try {
-    const matches = await sql<
-      Team & Match
-    >`select * from teams join matches on (teams.name = matches.teama OR teams.name = matches.teamb) where teams.name = ${name};`;
+    // const matches = await sql<
+    //   Team & Match
+    // >`select * from "Team" join "Match" on ("Team".name = "Match".namea OR "Team".name = "Match".nameb) where "Team".name = ${name};`;
+    const team = await prisma.team.findUnique({
+      where: {
+        name: name,
+      },
+      select: {
+        name: true,
+        regdate: true,
+        groupno: true,
+        matcha: true,
+        matchb: true,
+      },
+    });
 
-    return matches.rows;
+    return team;
   } catch {
-    throw new Error(`Failed to fetch matches for team ${name}`);
+    throw new Error(`Failed to fetch data for team ${name}`);
   }
 }
 
 export async function fetchAllTeams() {
   try {
-    const teams = await sql`select name from teams;`;
-
-    return teams.rows.map((team) => team.name);
+    const teams = await prisma.team.findMany({ select: { name: true } });
+    return teams.map((team) => team.name);
   } catch {
     throw new Error(`Failed to fetch all teams`);
   }
@@ -37,9 +46,9 @@ export async function fetchAllTeams() {
 
 export async function fetchFormInputs() {
   try {
-    const form = await sql<UserFormInput>`select * from form;`;
+    const form = await prisma.form.findMany();
 
-    return form.rows[0];
+    return form[0];
   } catch {
     throw new Error(`Failed to fetch form input`);
   }

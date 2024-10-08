@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { fetchAllTeams, fetchTable, fetchTeamData } from '../../lib/data';
 import {
   extractStringFromDate,
@@ -5,6 +6,7 @@ import {
   totalMatchPoints,
 } from '../../lib/utils';
 import TeamSelector from './team-selector';
+import { auth } from '@/auth';
 
 export default async function Page({
   searchParams,
@@ -12,10 +14,20 @@ export default async function Page({
   searchParams: { name?: string };
 }) {
   const teams = await fetchAllTeams();
-  console.log(teams);
+  const session = await auth();
 
   if (teams.length === 0) {
-    return <p>select team</p>;
+    return (
+      <>
+        {session?.user && (
+          <Link href={'/edit'}>
+            <button className="rounded-md bg-blue-600 text-white hover:text-blue-600 hover:bg-white hover:border-blue-600 border px-2 py-1">
+              {'Add'}
+            </button>
+          </Link>
+        )}
+      </>
+    );
   }
 
   const name = searchParams?.name;
@@ -26,27 +38,35 @@ export default async function Page({
 
   const table = await fetchTable();
 
-  const matches = await fetchTeamData(name);
-  const teamDataIndex = table[matches[0].groupno].findIndex(
+  const team = await fetchTeamData(name);
+  if (!team) {
+    return <></>;
+  }
+
+  const teamDataIndex = table[team?.groupno as 1 | 2].findIndex(
     (team) => team.name === name
   );
-  const teamData = table[matches[0].groupno][teamDataIndex];
+  const teamData = table[team?.groupno as 1 | 2][teamDataIndex];
+  const matches = team.matcha
+    .concat(team.matchb)
+    .sort((a, b) => a.order - b.order);
 
   return (
     <>
+      {' '}
       <TeamSelector teams={teams} currentTeam={name} />
       {teamData && (
         <>
           <h3 className="font-bold text-xl">Team Details</h3>
           <div className="grid grid-cols-2 max-w-96">
             <h3>Team Name:</h3>
-            <p>{teamData.name}</p>
+            <p>{team.name}</p>
             <h3>Ranking:</h3>
             <p>{teamDataIndex + 1}</p>
             <h3>Registration Date:</h3>
-            <p>{extractStringFromDate(teamData.regdate)}</p>
+            <p>{extractStringFromDate(team.regdate)}</p>
             <h3>Group:</h3>
-            <p>{teamData.groupno}</p>
+            <p>{team.groupno}</p>
             <h3>Points:</h3>
             <p>{totalMatchPoints(teamData)}</p>
             <h3>Goals:</h3>
@@ -59,15 +79,15 @@ export default async function Page({
           {matches.length > 0 &&
             matches.map((match) => (
               <div
-                key={`${match.teama}${match.teamb}`}
+                key={`${match.namea}${match.nameb}`}
                 className="flex justify-between max-w-96"
               >
-                <p className="font-bold">{match.teama}</p>
+                <p className="font-bold">{match.namea}</p>
                 <p className="text-xl tracking-widest">
                   {match.goalsa}-{match.goalsb}
                 </p>
 
-                <p className="font-bold">{match.teamb}</p>
+                <p className="font-bold">{match.nameb}</p>
               </div>
             ))}
         </>

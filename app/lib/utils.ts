@@ -39,7 +39,7 @@ export function totalAlternateMatchPoints(team: TeamDetails) {
 }
 
 export function extractStringFromDate(date: Date) {
-  return `${date.getDate()}/${date.getMonth() + 1}`;
+  return `${date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()}/${date.getMonth() < 9 ? `0${date.getMonth() + 1}` : date.getMonth() + 1}`;
 }
 
 export function sortTable(table: Table) {
@@ -68,7 +68,7 @@ export function parseTeams(formData: FormData): Team[] {
     const validatedFields = TeamSchema.safeParse({
       name: team.split(' ')[0],
       regdate: `2024-${team.split(' ')[1].split('/')[1]}-${team.split(' ')[1].split('/')[0]}T00:00:00.000Z`,
-      groupno: team.split(' ')[2],
+      groupno: Number(team.split(' ')[2]),
     });
 
     if (!validatedFields.success) {
@@ -94,7 +94,7 @@ export function validateTeams(teams: Team[], groupSize: number) {
   let group2Counter: number = 0;
 
   teams.forEach((team) => {
-    if (team.groupno === '1') group1Counter++;
+    if (team.groupno === 1) group1Counter++;
     else group2Counter++;
   });
 
@@ -123,8 +123,8 @@ export function parseAndValidateMatches(
 
   (formData.get('matches') as string).split('\r\n').forEach((match) => {
     const validatedFields = schema.safeParse({
-      teamA: match.split(' ')[0],
-      teamB: match.split(' ')[1],
+      nameA: match.split(' ')[0],
+      nameB: match.split(' ')[1],
       goalsA: match.split(' ')[2],
       goalsB: match.split(' ')[3],
     });
@@ -135,15 +135,15 @@ export function parseAndValidateMatches(
       );
     }
 
-    const { teamA, teamB, goalsA, goalsB } = validatedFields.data;
+    const { nameA, nameB, goalsA, goalsB } = validatedFields.data;
 
-    const teamADetails = teamsData.find((team) => team.name === teamA) as Team;
-    const teamBDetails = teamsData.find((team) => team.name === teamB) as Team;
+    const teamADetails = teamsData.find((team) => team.name === nameA) as Team;
+    const teamBDetails = teamsData.find((team) => team.name === nameB) as Team;
 
     if (teamADetails.groupno !== teamBDetails.groupno) {
       throw new Error('Teams can only play other teams in the same group.');
     }
-    const mapKey = [teamA, teamB].sort().join();
+    const mapKey = [nameA, nameB].sort().join();
     if (matches.get(mapKey)) {
       throw new Error('Each team can only play another team once.');
     }
@@ -152,8 +152,8 @@ export function parseAndValidateMatches(
     (teamBDetails.gamesPlayed as number)++;
 
     matches.set(mapKey, {
-      teamA,
-      teamB,
+      nameA,
+      nameB,
       goalsA,
       goalsB,
     });
@@ -169,10 +169,7 @@ export function parseAndValidateMatches(
   return Array.from(matches.values());
 }
 
-export function generateTableFromData(
-  teams: Team[],
-  matches: Match[]
-): { '1': Table; '2': Table } {
+export function generateTableFromData(teams: Team[], matches: Match[]) {
   const table: Table = teams.map((team) => ({
     wins: 0,
     draws: 0,
@@ -183,21 +180,21 @@ export function generateTableFromData(
   const teamMap = Object.fromEntries(table.map((table) => [table.name, table]));
 
   matches.forEach((match) => {
-    teamMap[match.teama].goals += match.goalsa;
-    teamMap[match.teamb].goals += match.goalsb;
+    teamMap[match.namea].goals += match.goalsa;
+    teamMap[match.nameb].goals += match.goalsb;
     if (match.goalsa > match.goalsb) {
-      teamMap[match.teama].wins++;
-      teamMap[match.teamb].losses++;
+      teamMap[match.namea].wins++;
+      teamMap[match.nameb].losses++;
     } else if (match.goalsa == match.goalsb) {
-      teamMap[match.teama].draws++;
-      teamMap[match.teamb].draws++;
+      teamMap[match.namea].draws++;
+      teamMap[match.nameb].draws++;
     } else {
-      teamMap[match.teama].losses++;
-      teamMap[match.teamb].wins++;
+      teamMap[match.namea].losses++;
+      teamMap[match.nameb].wins++;
     }
   });
-  const group1 = table.filter((entry) => entry.groupno == '1');
-  const group2 = table.filter((entry) => entry.groupno === '2');
+  const group1 = table.filter((entry) => entry.groupno === 1);
+  const group2 = table.filter((entry) => entry.groupno === 2);
 
-  return { '1': sortTable(group1), '2': sortTable(group2) };
+  return { 1: sortTable(group1), 2: sortTable(group2) };
 }

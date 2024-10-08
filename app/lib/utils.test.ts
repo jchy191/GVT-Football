@@ -17,7 +17,7 @@ describe('totalMatchPoints', () => {
     draws: 0,
     losses: 0,
     goals: 0,
-    groupno: '1',
+    groupno: 1,
     name: '',
   };
   beforeEach(() => {
@@ -54,7 +54,7 @@ describe('totalAlternateMatchPoints', () => {
     draws: 0,
     losses: 0,
     goals: 0,
-    groupno: '1',
+    groupno: 1,
     name: '',
   };
   beforeEach(() => {
@@ -93,7 +93,7 @@ describe('sortTable', () => {
     draws: 0,
     losses: 0,
     goals: 0,
-    groupno: '1',
+    groupno: 1,
     name: '',
   };
   const teamB: TeamDetails = {
@@ -102,7 +102,7 @@ describe('sortTable', () => {
     draws: 0,
     losses: 0,
     goals: 0,
-    groupno: '1',
+    groupno: 1,
     name: '',
   };
   const table: Table = [teamA, teamB];
@@ -185,37 +185,37 @@ describe('parseTeams', () => {
 const teamA: Team = {
   name: 'teamA',
   regdate: new Date('01/01'),
-  groupno: '1',
+  groupno: 1,
   gamesPlayed: 0,
 };
 const teamB: Team = {
   name: 'teamB',
   regdate: new Date('01/01'),
-  groupno: '1',
+  groupno: 1,
   gamesPlayed: 0,
 };
 const teamC: Team = {
   name: 'teamC',
   regdate: new Date('01/01'),
-  groupno: '1',
+  groupno: 1,
   gamesPlayed: 0,
 };
 const teamD: Team = {
   name: 'teamD',
   regdate: new Date('01/01'),
-  groupno: '2',
+  groupno: 2,
   gamesPlayed: 0,
 };
 const teamE: Team = {
   name: 'teamE',
   regdate: new Date('01/01'),
-  groupno: '2',
+  groupno: 2,
   gamesPlayed: 0,
 };
 const teamF: Team = {
   name: 'teamE',
   regdate: new Date('01/01'),
-  groupno: '2',
+  groupno: 2,
   gamesPlayed: 0,
 };
 describe('parseTeams', () => {

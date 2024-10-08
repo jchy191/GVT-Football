@@ -7,12 +7,12 @@ export type TeamDetails = {
   draws: number;
   losses: number;
   goals: number;
-  groupno: '1' | '2';
+  groupno: number;
 };
 
 export type Match = {
-  teama: string;
-  teamb: string;
+  namea: string;
+  nameb: string;
   goalsa: number;
   goalsb: number;
 };
@@ -33,9 +33,14 @@ export type MatchPointsAssignment = {
 export const TeamSchema = z.object({
   name: z.string().max(255, 'Team name exceeds the character limit of 255.'),
   regdate: z.coerce.date(),
-  groupno: z.enum(['1', '2'], {
-    message: 'Invalid group number, expected 1 or 2.',
-  }),
+  groupno: z
+    .number()
+    .lte(2, {
+      message: 'Invalid group number, expected 1 or 2.',
+    })
+    .gte(1, {
+      message: 'Invalid group number, expected 1 or 2.',
+    }),
   gamesPlayed: z.number().optional(),
 });
 
@@ -43,10 +48,10 @@ export type Team = z.infer<typeof TeamSchema>;
 
 export const MatchSchema = (teams: [string, ...string[]]) =>
   z.object({
-    teamA: z.enum(teams, {
+    nameA: z.enum(teams, {
       message: 'Invalid team name, team does not exist.',
     }),
-    teamB: z.enum(teams, {
+    nameB: z.enum(teams, {
       message: 'Invalid team name, team does not exist.',
     }),
     goalsA: z.coerce.number({ message: 'Invalid input for goals scored.' }),
