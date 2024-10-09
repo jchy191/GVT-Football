@@ -51,9 +51,20 @@ export async function fetchFormInputs() {
   }
 }
 
-export async function fetchLogs() {
+export async function fetchTotalLogsCount() {
+  try {
+    const count = await prisma.log.count();
+    return count;
+  } catch {
+    throw new Error('Failed to fetch log count');
+  }
+}
+
+export async function fetchLogs(skip: number, take: number) {
   try {
     const logs = await prisma.log.findMany({
+      skip: skip,
+      take: take,
       orderBy: {
         createdAt: 'desc',
       },
