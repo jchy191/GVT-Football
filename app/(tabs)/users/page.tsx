@@ -9,9 +9,13 @@ export default async function Page() {
   if (session?.user.role !== 'admin') {
     redirect('/');
   }
+
   const users = await fetchUsers();
+  const activeUsers = users.filter((user) => user.name);
+  const pendingUsers = users.filter((user) => !user.name);
+
   return (
-    <div className="mt-4">
+    <div className="mt-6">
       <div className="flex justify-between items-center mb-3">
         <h2 className="font-bold text-xl">Users</h2>
         <Link href={'/users/add'}>
@@ -20,9 +24,21 @@ export default async function Page() {
           </button>
         </Link>
       </div>
-      {users.map((user) => (
+      {activeUsers.map((user) => (
         <UserEntry user={user} key={user.id} />
       ))}
+      {pendingUsers.length > 0 && (
+        <>
+          <h2 className="font-bold text-xl mt-8 mb-2">Awaiting Acceptance</h2>
+          <p className="text-gray-500 mb-3">
+            Users have to log into the website with their accounts to become an
+            active user.
+          </p>
+          {pendingUsers.map((user) => (
+            <UserEntry user={user} key={user.id} />
+          ))}
+        </>
+      )}
     </div>
   );
 }

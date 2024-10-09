@@ -13,11 +13,11 @@ const config: Config = {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
         primary: {
-          light: colors.blue[50],
-          DEFAULT: colors.blue[800],
+          light: colors.indigo[50],
+          DEFAULT: colors.blue[700],
         },
         error: {
-          DEFAULT: colors.red[700],
+          DEFAULT: colors.red[800],
         },
       },
     },

@@ -15,12 +15,21 @@ import { PrismaAdapter } from '@auth/prisma-adapter';
 import cuid from 'cuid';
 import { Adapter } from 'next-auth/adapters';
 
+export type State = {
+  errors?: {
+    teams?: string;
+    matches?: string;
+    other?: string;
+  };
+  message?: string | null;
+};
+
 export async function createTable(
   groupSize: number = 6,
   action: LogType,
-  prevState: string,
+  prevState: State,
   formData: FormData
-) {
+): State {
   let teams, matches;
   const session = await auth();
   if (!session?.user) {
@@ -30,12 +39,17 @@ export async function createTable(
   try {
     teams = parseTeams(formData);
     validateTeams(teams, groupSize);
-
+  } catch (err) {
+    const error = err as { message: string };
+    return { errors: { teams: error.message } };
+  }
+  try {
     matches = parseAndValidateMatches(teams, formData);
   } catch (err) {
     const error = err as { message: string };
-    return error.message;
+    return { errors: { matches: error.message } };
   }
+
   try {
     await prisma.$transaction([
       prisma.match.deleteMany({}),
@@ -75,7 +89,7 @@ export async function createTable(
       }),
     ]);
   } catch {
-    return 'Issues connecting to the database.';
+    return { errors: { other: 'Issues connecting to the database.' } };
   }
 
   revalidatePath('/');
@@ -152,11 +166,11 @@ export async function createUser(previousState: string, formData: FormData) {
         role: newUser.role,
       });
     }
-    revalidatePath('/users');
-    redirect('/users');
   } catch {
     return 'Issues connecting to the database.';
   }
+  revalidatePath('/users');
+  redirect('/users');
 }
 
 export async function deleteUser(id: string) {

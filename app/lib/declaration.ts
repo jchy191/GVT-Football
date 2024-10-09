@@ -43,7 +43,7 @@ export const TeamSchema = z.object({
   name: z.string(),
   regdate: z.coerce.date(),
   groupno: z
-    .number()
+    .number({ message: 'Invalid group number, expected 1 or 2.' })
     .lte(2, {
       message: 'Invalid group number, expected 1 or 2.',
     })

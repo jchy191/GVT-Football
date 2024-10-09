@@ -8,7 +8,7 @@ import {
 
 export default function Table({ entries }: { entries: TeamDetails[] }) {
   return (
-    <div className="max-w-screen-xl mx-auto">
+    <div className="max-w-screen-xl mx-auto overflow-x-scroll">
       <table className="table-auto divide-y divide-gray-500 min-w-full">
         <thead>
           <tr>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { fetchTable } from '../lib/data';
-import Table from '../ui/table';
+import Table from './table';
 import ClearForm from '../ui/clear-form';
 import Link from 'next/link';
 import { auth } from '../../auth';
