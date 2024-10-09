@@ -22,7 +22,6 @@ model User {
   sessions      Session[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  logs          Log[]
 }
 
 model Account {
@@ -100,8 +99,9 @@ enum LogType {
 model Log {
   id          String   @id @default(cuid())
   createdAt   DateTime @default(now())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  email       String
+  image       String
   action      LogType
   formTeams   String?
   formMatches String?

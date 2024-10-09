@@ -4,9 +4,9 @@ import { PlusIcon, MinusIcon } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
 import Image from 'next/image';
 import { useState } from 'react';
-import type { Log, User } from '@prisma/client';
+import type { Log } from '@prisma/client';
 
-export default function LogEntry({ log }: { log: Log & { user: User } }) {
+export default function LogEntry({ log }: { log: Log }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="text-sm border-b border-t py-1">
@@ -17,16 +17,16 @@ export default function LogEntry({ log }: { log: Log & { user: User } }) {
         </div>
         <div className="mx-2 flex-initial basis-1/12">
           <Image
-            src={log.user.image ?? ''}
-            alt={log.user.name ?? ''}
+            src={log.image ?? ''}
+            alt={log.name ?? ''}
             className="rounded-full"
             width={32}
             height={32}
           />
         </div>
         <div className="flex-initial basis-1/3">
-          <p>{log.user.name}</p>
-          <p>{log.user.email}</p>
+          <p>{log.name}</p>
+          <p>{log.email}</p>
         </div>
         <p className="flex-initial basis-1/12">{log.action}</p>
         <div className="flex-initial basis-1/12">

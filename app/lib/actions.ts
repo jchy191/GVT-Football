@@ -65,10 +65,12 @@ export async function createTable(
       }),
       prisma.log.create({
         data: {
-          userId: session.user.id as string,
           action: action,
           formTeams: formData.get('teams')?.toString(),
           formMatches: formData.get('matches')?.toString(),
+          name: session.user.name as string,
+          image: session.user.image as string,
+          email: session.user.email as string,
         },
       }),
     ]);
@@ -95,8 +97,10 @@ export async function deleteTable() {
       prisma.form.deleteMany({}),
       prisma.log.create({
         data: {
-          userId: session.user.id as string,
           action: 'DELETE',
+          name: session.user.name as string,
+          image: session.user.image as string,
+          email: session.user.email as string,
         },
       }),
     ]);
@@ -149,7 +153,7 @@ export async function createUser(previousState: string, formData: FormData) {
       });
     }
     revalidatePath('/users');
-    return 'Successfully created user. User will be displayed on the user list once they log in to this web application.';
+    redirect('/users');
   } catch {
     return 'Issues connecting to the database.';
   }

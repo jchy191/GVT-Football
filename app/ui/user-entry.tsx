@@ -5,20 +5,21 @@ import type { User } from '@prisma/client';
 import DeleteUser from './delete-user';
 
 export default function UserEntry({ user }: { user: User }) {
-  if (!user.name) {
-    return <></>;
-  }
   return (
     <div className="text-sm border-b border-t py-1">
       <div className="flex justify-between items-center h-8">
         <div className="mx-2 flex-initial basis-1/12">
-          <Image
-            src={user.image ?? ''}
-            alt={user.name ?? ''}
-            className="rounded-full"
-            width={32}
-            height={32}
-          />
+          {user.image ? (
+            <Image
+              src={user.image ?? ''}
+              alt={user.name ?? ''}
+              className="rounded-full"
+              width={32}
+              height={32}
+            />
+          ) : (
+            ' '
+          )}
         </div>
 
         <p className="flex-initial basis-1/4">{user.name}</p>

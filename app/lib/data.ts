@@ -58,13 +58,14 @@ export async function fetchLogs() {
         createdAt: 'desc',
       },
       select: {
-        userId: true,
+        name: true,
+        email: true,
+        image: true,
         id: true,
         createdAt: true,
         formMatches: true,
         formTeams: true,
         action: true,
-        user: true,
       },
     });
     return logs;
