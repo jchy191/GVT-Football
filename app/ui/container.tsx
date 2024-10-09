@@ -1,4 +1,6 @@
-export default function Container({ children }: { children: React.ReactNode }) {
+export default function Container({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <div className="mx-auto max-w-screen-xl">
       <div className={`flex items-center justify-center px-6 md:px-10`}>

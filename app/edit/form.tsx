@@ -1,14 +1,12 @@
 'use client';
 
-import { createTable, State } from '../lib/actions';
+import { createTable } from '../lib/actions';
 import { useFormState } from 'react-dom';
-import { UserFormInput } from '../lib/declaration';
+import { CreateTableFormState, UserFormInput } from '../lib/declaration';
 import type { LogType } from '@prisma/client';
 
-export const maxDuration = 40;
-
-export default function Form({ data }: { data: UserFormInput }) {
-  const initialState: State = {};
+export default function Form({ data }: Readonly<{ data: UserFormInput }>) {
+  const initialState: CreateTableFormState = {};
   let action: LogType = 'UPDATE';
   if (!data) {
     action = 'CREATE';

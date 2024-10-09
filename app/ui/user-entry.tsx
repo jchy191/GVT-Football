@@ -4,7 +4,7 @@ import Image from 'next/image';
 import type { User } from '@prisma/client';
 import DeleteUser from './delete-user';
 
-export default function UserEntry({ user }: { user: User }) {
+export default function UserEntry({ user }: Readonly<{ user: User }>) {
   return (
     <div className="text-sm border-b border-t py-1">
       <div className="flex justify-between items-center h-8">

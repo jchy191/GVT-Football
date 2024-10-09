@@ -1,3 +1,4 @@
+import { auth } from '@/auth';
 import { generateTableFromData } from './utils';
 import { prisma } from '@/prisma';
 
@@ -42,6 +43,10 @@ export async function fetchAllTeams() {
 }
 
 export async function fetchFormInputs() {
+  const session = await auth();
+  if (!session?.user) {
+    throw new Error('Unauthorised access.');
+  }
   try {
     const form = await prisma.form.findMany();
 
@@ -52,6 +57,10 @@ export async function fetchFormInputs() {
 }
 
 export async function fetchTotalLogsCount() {
+  const session = await auth();
+  if (!session || session?.user.role !== 'admin') {
+    throw new Error('Unauthorised access.');
+  }
   try {
     const count = await prisma.log.count();
     return count;
@@ -61,6 +70,10 @@ export async function fetchTotalLogsCount() {
 }
 
 export async function fetchLogs(skip: number, take: number) {
+  const session = await auth();
+  if (!session || session?.user.role !== 'admin') {
+    throw new Error('Unauthorised access.');
+  }
   try {
     const logs = await prisma.log.findMany({
       skip: skip,
@@ -86,6 +99,10 @@ export async function fetchLogs(skip: number, take: number) {
 }
 
 export async function fetchUsers() {
+  const session = await auth();
+  if (!session || session?.user.role !== 'admin') {
+    throw new Error('Unauthorised access.');
+  }
   try {
     const users = await prisma.user.findMany({
       orderBy: {

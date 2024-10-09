@@ -8,10 +8,10 @@ import { usePathname, useSearchParams } from 'next/navigation';
 export default function Pagination({
   totalPages,
   hrefId,
-}: {
+}: Readonly<{
   totalPages: number;
   hrefId?: string;
-}) {
+}>) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
@@ -49,11 +49,11 @@ function PaginationArrow({
   href,
   direction,
   isDisabled,
-}: {
+}: Readonly<{
   href: string;
   direction: 'left' | 'right';
   isDisabled?: boolean;
-}) {
+}>) {
   const className = clsx(
     'flex h-10 w-10 items-center justify-center rounded-md border',
     {

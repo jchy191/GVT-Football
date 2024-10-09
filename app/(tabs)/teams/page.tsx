@@ -10,9 +10,9 @@ import { auth } from '@/auth';
 
 export default async function Page({
   searchParams,
-}: {
+}: Readonly<{
   searchParams: { name?: string };
-}) {
+}>) {
   const teams = await fetchAllTeams();
   const session = await auth();
 

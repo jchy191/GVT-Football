@@ -3,7 +3,7 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 import { deleteUser } from '../lib/actions';
 import { useFormState } from 'react-dom';
 
-export default function DeleteUser({ id }: { id: string }) {
+export default function DeleteUser({ id }: Readonly<{ id: string }>) {
   const initialState = '';
   const deleteUserWithId = deleteUser.bind(null, id);
   const [state, formAction] = useFormState(deleteUserWithId, initialState);

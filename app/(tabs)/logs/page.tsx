@@ -8,9 +8,9 @@ const MAX_ITEMS_PER_PAGE = 10;
 
 export default async function Page({
   searchParams,
-}: {
+}: Readonly<{
   searchParams: { page?: string };
-}) {
+}>) {
   const session = await auth();
   if (session?.user.role !== 'admin') {
     redirect('/');

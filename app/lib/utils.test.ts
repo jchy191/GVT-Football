@@ -9,7 +9,8 @@ import {
   totalMatchPoints,
   validateTeams,
 } from './utils';
-import { Table, Team, TeamDetails } from './declaration';
+import { Table, TeamDetails } from './declaration';
+import { Team } from '@prisma/client';
 
 describe('totalMatchPoints', () => {
   const team: TeamDetails = {
@@ -187,37 +188,31 @@ const teamA: Team = {
   name: 'teamA',
   regdate: new Date('01/01'),
   groupno: 1,
-  gamesPlayed: 0,
 };
 const teamB: Team = {
   name: 'teamB',
   regdate: new Date('01/01'),
   groupno: 1,
-  gamesPlayed: 0,
 };
 const teamC: Team = {
   name: 'teamC',
   regdate: new Date('01/01'),
   groupno: 1,
-  gamesPlayed: 0,
 };
 const teamD: Team = {
   name: 'teamD',
   regdate: new Date('01/01'),
   groupno: 2,
-  gamesPlayed: 0,
 };
 const teamE: Team = {
   name: 'teamE',
   regdate: new Date('01/01'),
   groupno: 2,
-  gamesPlayed: 0,
 };
 const teamF: Team = {
   name: 'teamE',
   regdate: new Date('01/01'),
   groupno: 2,
-  gamesPlayed: 0,
 };
 describe('parseTeams', () => {
   let teams: Team[] = [];
@@ -252,12 +247,6 @@ describe('parseAndValidateMatches', () => {
   const form: FormData = new FormData();
   beforeEach(() => {
     form.delete('matches');
-    teamA.gamesPlayed = 0;
-    teamB.gamesPlayed = 0;
-    teamC.gamesPlayed = 0;
-    teamD.gamesPlayed = 0;
-    teamE.gamesPlayed = 0;
-    teamF.gamesPlayed = 0;
   });
 
   test('should return an error message on blank input', () => {

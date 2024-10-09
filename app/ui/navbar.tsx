@@ -15,7 +15,7 @@ export default async function NavBar() {
           className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4"
         >
           <div className="flex gap-4 ml-auto items-center">
-            {session && session.user ? (
+            {session?.user ? (
               <>
                 <p className="text-gray-500">Welcome, {session.user.name}</p>
                 <Image

@@ -4,9 +4,9 @@ import Container from '../ui/container';
 
 export default async function Layout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   const tabs = [
     { name: 'Table', href: '/', current: true },
     { name: 'Individual Teams', href: '/teams', current: false },

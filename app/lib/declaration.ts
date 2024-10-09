@@ -10,13 +10,6 @@ export type TeamDetails = {
   groupno: number;
 };
 
-export type Match = {
-  namea: string;
-  nameb: string;
-  goalsa: number;
-  goalsb: number;
-};
-
 export type Table = TeamDetails[];
 
 export type PointsAssignment = {
@@ -41,7 +34,14 @@ export type NewUser = z.infer<typeof NewUserSchema>;
 
 export const TeamSchema = z.object({
   name: z.string(),
-  regdate: z.coerce.date(),
+  regdate: z.coerce.date({
+    errorMap: (issue, { defaultError }) => ({
+      message:
+        issue.code === 'invalid_date'
+          ? 'Invalid date, required format is DD/MM.'
+          : defaultError,
+    }),
+  }),
   groupno: z
     .number({ message: 'Invalid group number, expected 1 or 2.' })
     .lte(2, {
@@ -53,21 +53,27 @@ export const TeamSchema = z.object({
   gamesPlayed: z.number().optional(),
 });
 
-export type Team = z.infer<typeof TeamSchema>;
-
 export const MatchSchema = (teams: [string, ...string[]]) =>
   z.object({
-    nameA: z.enum(teams, {
+    namea: z.enum(teams, {
       message: 'Invalid team name, team does not exist.',
     }),
-    nameB: z.enum(teams, {
+    nameb: z.enum(teams, {
       message: 'Invalid team name, team does not exist.',
     }),
-    goalsA: z.coerce.number({ message: 'Invalid input for goals scored.' }),
-    goalsB: z.coerce.number({ message: 'Invalid input for goals scored.' }),
+    goalsa: z.coerce.number({ message: 'Invalid input for goals scored.' }),
+    goalsb: z.coerce.number({ message: 'Invalid input for goals scored.' }),
   });
 
 export type UserFormInput = {
   teams: string;
   matches: string;
+};
+export type CreateTableFormState = {
+  errors?: {
+    teams?: string;
+    matches?: string;
+    other?: string;
+  };
+  message?: string | null;
 };

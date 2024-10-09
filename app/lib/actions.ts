@@ -14,22 +14,14 @@ import type { LogType } from '@prisma/client';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import cuid from 'cuid';
 import { Adapter } from 'next-auth/adapters';
-
-export type State = {
-  errors?: {
-    teams?: string;
-    matches?: string;
-    other?: string;
-  };
-  message?: string | null;
-};
+import { CreateTableFormState } from './declaration';
 
 export async function createTable(
-  groupSize: number = 6,
+  groupSize: number,
   action: LogType,
-  prevState: State,
+  prevState: CreateTableFormState,
   formData: FormData
-): State {
+): Promise<CreateTableFormState> {
   let teams, matches;
   const session = await auth();
   if (!session?.user) {
@@ -62,12 +54,12 @@ export async function createTable(
         })),
       }),
       prisma.match.createMany({
-        data: matches.map((match, i) => ({
-          order: i,
-          namea: match.nameA,
-          nameb: match.nameB,
-          goalsa: match.goalsA,
-          goalsb: match.goalsB,
+        data: matches.map((match) => ({
+          order: match.order,
+          namea: match.namea,
+          nameb: match.nameb,
+          goalsa: match.goalsa,
+          goalsb: match.goalsb,
         })),
       }),
       prisma.form.deleteMany({}),

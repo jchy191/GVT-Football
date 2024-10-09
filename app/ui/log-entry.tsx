@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import type { Log } from '@prisma/client';
 
-export default function LogEntry({ log }: { log: Log }) {
+export default function LogEntry({ log }: Readonly<{ log: Log }>) {
   const [open, setOpen] = useState(false);
   return (
     <div className="text-sm border-b border-t py-1">

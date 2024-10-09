@@ -6,7 +6,9 @@ import {
   extractStringFromDate,
 } from '../lib/utils';
 
-export default function Table({ entries }: { entries: TeamDetails[] }) {
+export default function Table({
+  entries,
+}: Readonly<{ entries: TeamDetails[] }>) {
   return (
     <div className="max-w-screen-xl mx-auto overflow-x-scroll">
       <table className="table-auto divide-y divide-gray-500 min-w-full">

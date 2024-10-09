@@ -4,9 +4,9 @@ import { usePathname } from 'next/navigation';
 
 export default function TabSwitcher({
   tabs,
-}: {
+}: Readonly<{
   tabs: { name: string; href: string; current: boolean }[];
-}) {
+}>) {
   const pathname = usePathname();
   return (
     <div className="border-b border-gray-200">
