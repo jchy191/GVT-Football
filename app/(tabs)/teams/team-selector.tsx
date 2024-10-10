@@ -13,7 +13,7 @@ export default function TeamSelector({
   currentTeam,
 }: Readonly<{
   teams: string[];
-  currentTeam?: string;
+  currentTeam: string;
 }>) {
   return (
     <Listbox>
@@ -24,7 +24,7 @@ export default function TeamSelector({
         <div className="relative mt-2">
           <ListboxButton className="relative inline rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 text-sm">
             <span className="block truncate capitalize">
-              {currentTeam ?? 'All'}
+              {currentTeam === '' ? 'Select...' : currentTeam}
             </span>
             <span className="absolute inset-y-0 right-0 flex items-center pr-2">
               <ChevronUpDownIcon className="h-5 w-5 text-gray-400" />

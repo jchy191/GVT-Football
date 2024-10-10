@@ -33,13 +33,23 @@ export async function createTable(
     validateTeams(teams, groupSize);
   } catch (err) {
     const error = err as { message: string };
-    return { errors: { teams: error.message } };
+    return {
+      errors: {
+        teams: error.message,
+        other: 'There is an error with the input of teams.',
+      },
+    };
   }
   try {
     matches = parseAndValidateMatches(teams, formData);
   } catch (err) {
     const error = err as { message: string };
-    return { errors: { matches: error.message } };
+    return {
+      errors: {
+        matches: error.message,
+        other: 'There is an error with the input of matches.',
+      },
+    };
   }
 
   try {

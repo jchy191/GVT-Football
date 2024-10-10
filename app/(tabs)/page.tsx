@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { fetchTable } from '../lib/data';
 import Table from './table';
 import ClearForm from '../ui/clear-form';
@@ -32,9 +32,13 @@ export default async function Home() {
         </div>
       )}
       <h1 className="font-bold text-2xl mb-4">Group 1</h1>
-      <Table entries={table['1']} />
+      <Suspense fallback={<p>Loading feed...</p>}>
+        <Table entries={table['1']} />
+      </Suspense>
       <h1 className="font-bold text-2xl mt-8 mb-4">Group 2</h1>
-      <Table entries={table['2']} />
+      <Suspense fallback={<p>Loading feed...</p>}>
+        <Table entries={table['2']} />
+      </Suspense>
     </div>
   );
 }
