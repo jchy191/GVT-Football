@@ -7,9 +7,9 @@ import {
 
 export default async function TeamData({
   currentTeam,
-}: {
+}: Readonly<{
   currentTeam: string;
-}) {
+}>) {
   const table = await fetchTable();
 
   const team = await fetchTeamData(currentTeam);

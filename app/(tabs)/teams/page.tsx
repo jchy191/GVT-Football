@@ -28,7 +28,7 @@ export default async function Page({
     );
   }
 
-  const name = searchParams?.name || '';
+  const name = searchParams?.name ?? '';
 
   return (
     <div className="mt-6">
