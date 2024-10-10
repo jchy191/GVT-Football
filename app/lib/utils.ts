@@ -6,7 +6,7 @@ import {
   Table,
   TeamDetails,
   TeamSchema,
-} from './declaration';
+} from './definitions';
 import { Team, Match } from '@prisma/client';
 
 export const points: MatchPointsAssignment = {
@@ -90,7 +90,7 @@ export function parseTeams(formData: FormData): Team[] {
     const validatedFields = TeamSchema.safeParse({
       name: team.split(' ')[0],
       regdate: `2024-${team.split(' ')[1].split('/')[1]}-${team.split(' ')[1].split('/')[0]}T00:00:00.000Z`,
-      groupno: Number(team.split(' ')[2]),
+      groupno: team.split(' ')[2],
     });
 
     if (!validatedFields.success) {
@@ -158,10 +158,12 @@ export function parseAndValidateMatches(
     }
 
     const { namea, nameb, goalsa, goalsb } = validatedFields.data;
+
     const mapKey = [namea, nameb].sort((a, b) => a.localeCompare(b)).join();
 
-    checkMatchIsBetweenTeamsInSameGroup(teamsData, namea, nameb);
-    checkMatchIsUnique(mapKey, matches);
+    checkMatchIsBetweenTwoDifferentTeams(namea, nameb, i);
+    checkMatchIsBetweenTeamsInSameGroup(teamsData, namea, nameb, i);
+    checkMatchIsUnique(mapKey, matches, i);
 
     gamesPlayed[namea]++;
     gamesPlayed[nameb]++;
@@ -210,22 +212,42 @@ export function generateTableFromData(teams: Team[], matches: Match[]) {
   return { 1: sortTable(group1), 2: sortTable(group2) };
 }
 
+function checkMatchIsBetweenTwoDifferentTeams(
+  namea: string,
+  nameb: string,
+  index: number
+) {
+  if (namea === nameb) {
+    throw new Error(
+      `For line ${index + 1}: Team ${namea} cannot play against itself`
+    );
+  }
+}
 function checkMatchIsBetweenTeamsInSameGroup(
   teamsData: Team[],
   namea: string,
-  nameb: string
+  nameb: string,
+  index: number
 ) {
-  const teamADetails = teamsData.find((team) => team.name === namea) as Team;
-  const teamBDetails = teamsData.find((team) => team.name === nameb) as Team;
+  const groupa = teamsData.find((team) => team.name === namea)?.groupno;
+  const groupb = teamsData.find((team) => team.name === nameb)?.groupno;
 
-  if (teamADetails.groupno !== teamBDetails.groupno) {
-    throw new Error('Teams can only play other teams in the same group.');
+  if (groupa !== groupb) {
+    throw new Error(
+      `For line ${index}: ${namea} in group ${groupa} cannot play against ${nameb} in group ${groupb}.`
+    );
   }
 }
 
-function checkMatchIsUnique(mapKey: string, matches: Map<string, unknown>) {
+function checkMatchIsUnique(
+  mapKey: string,
+  matches: Map<string, unknown>,
+  index: number
+) {
   if (matches.get(mapKey)) {
-    throw new Error('Each team can only play another team once.');
+    throw new Error(
+      `For line ${index}: Each team can only play another team once.`
+    );
   }
 }
 

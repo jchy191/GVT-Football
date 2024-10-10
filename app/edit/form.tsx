@@ -2,7 +2,7 @@
 
 import { createTable } from '../lib/actions';
 import { useFormState } from 'react-dom';
-import { CreateTableFormState, UserFormInput } from '../lib/declaration';
+import { CreateTableFormState, UserFormInput } from '../lib/definitions';
 import type { LogType } from '@prisma/client';
 
 export default function Form({ data }: Readonly<{ data: UserFormInput }>) {

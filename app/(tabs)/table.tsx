@@ -1,5 +1,5 @@
 import { ArrowUpIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { TeamDetails } from '../lib/declaration';
+import { TeamDetails } from '../lib/definitions';
 import {
   totalMatchPoints,
   totalAlternateMatchPoints,

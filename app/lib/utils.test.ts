@@ -9,7 +9,7 @@ import {
   totalMatchPoints,
   validateTeams,
 } from './utils';
-import { Table, TeamDetails } from './declaration';
+import { Table, TeamDetails } from './definitions';
 import { Team } from '@prisma/client';
 
 describe('totalMatchPoints', () => {
@@ -171,7 +171,7 @@ describe('parseTeams', () => {
   test('should return an error message if a team group is not 1 or 2', () => {
     form.append('teams', 'teamA 01/04 2\r\nteamB 01/04 3');
     expect(() => parseTeams(form)).toThrowError(
-      'Invalid group number, expected 1 or 2.'
+      'For line 2: Invalid group number "3", expected 1 or 2.'
     );
   });
   test('should return an error message if a team registration date is wrongly formatted', () => {
@@ -259,19 +259,19 @@ describe('parseAndValidateMatches', () => {
   test('should return an error message if a match consist of a non-existing team', () => {
     form.append('matches', 'teamA teamE 0 0');
     expect(() => parseAndValidateMatches([teamA], form)).toThrowError(
-      'Invalid team name, team does not exist'
+      'For line 1: Invalid team name, team "teamE" does not exist. Did you mean "teamA"?'
     );
 
     form.append('matches', 'teamB teamA 0 0');
     expect(() => parseAndValidateMatches([teamA], form)).toThrowError(
-      'Invalid team name, team does not exist'
+      'For line 1: Invalid team name, team "teamE" does not exist. Did you mean "teamA"?'
     );
   });
 
   test('should return an error message on malformatted goals', () => {
     form.append('matches', 'teamA teamB hello world');
     expect(() => parseAndValidateMatches([teamA, teamB], form)).toThrowError(
-      'Invalid input for goals scored.'
+      'For line 1: Invalid number of goals "hello" for the first team. Invalid number of goals "world" for the second team.'
     );
   });
 
@@ -279,7 +279,7 @@ describe('parseAndValidateMatches', () => {
     form.append('matches', 'teamA teamD 0 0');
 
     expect(() => parseAndValidateMatches([teamA, teamD], form)).toThrowError(
-      'Teams can only play other teams in the same group.'
+      'For line 0: teamA in group 1 cannot play against teamD in group 2.'
     );
   });
 

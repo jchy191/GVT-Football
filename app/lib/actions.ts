@@ -14,7 +14,7 @@ import type { LogType } from '@prisma/client';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import cuid from 'cuid';
 import { Adapter } from 'next-auth/adapters';
-import { CreateTableFormState } from './declaration';
+import { CreateTableFormState } from './definitions';
 
 export async function createTable(
   groupSize: number,
